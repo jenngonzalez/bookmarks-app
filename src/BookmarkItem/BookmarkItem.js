@@ -16,11 +16,8 @@ function deleteBookmarkRequest(bookmarkId, callback) {
     .then(res => {
       if (!res.ok) {
         // get the error message from the response,
-        return res.json().then(error => {
-          // then throw it
-          throw error
-        })
-      }
+        return res.json().then(error => Promise.reject(error))
+        }
       return res.json()
     })
     .then(data => {
@@ -83,7 +80,6 @@ export default function BookmarkItem(props) {
 
 
 BookmarkItem.propTypes = {
-  title: PropTypes.string.isRequired,
   url: (props, propName, componentName) => {
     // get the value of the prop
     const prop = props[propName];
@@ -104,13 +100,16 @@ BookmarkItem.propTypes = {
       return new Error(`Invalid prop, ${propName} must be min length 5 and begin http(s)://. Validation Failed.`);
     }
   },
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   rating: PropTypes.number,
   description: PropTypes.string
 };
 
 
 BookmarkItem.defaultProps = {
-  rating: 1,
-  description: "",
+  id: '',
+  title: '',
+  url: 'https://www.google.com',
   onClickDelete: () => {},
 }

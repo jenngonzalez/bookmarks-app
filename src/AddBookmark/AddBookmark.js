@@ -1,6 +1,7 @@
 import React, { Component } from  'react';
+import PropTypes from 'prop-types';
 import BookmarksContext from '../BookmarksContext'
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 import config from '../config'
 import './AddBookmark.css';
 
@@ -17,9 +18,12 @@ const Required = () => (
 )
 
 class AddBookmark extends Component {
-  // static defaultProps = {
-  //   onAddBookmark: () => {}
-  // };
+  
+  static propTypes = {
+    history: PropTypes.shape({
+      push: PropTypes.func,
+    }).isRequired,
+  }
 
   static contextType = BookmarksContext;
 
@@ -35,7 +39,7 @@ class AddBookmark extends Component {
       title: title.value,
       url: url.value,
       description: description.value,
-      rating: rating.value,
+      rating: Number(rating.value),
     }
     this.setState({ error: null })
     fetch(config.API_ENDPOINT, {
@@ -49,10 +53,7 @@ class AddBookmark extends Component {
       .then(res => {
         if (!res.ok) {
           // get the error message from the response,
-          return res.json().then(error => {
-            // then throw it
-            throw error
-          })
+          return res.json().then(error => Promise.reject(error))
         }
         return res.json()
       })
@@ -66,6 +67,7 @@ class AddBookmark extends Component {
 
       })
       .catch(error => {
+        console.error(error)
         this.setState({ error })
       })
   }
@@ -75,8 +77,9 @@ class AddBookmark extends Component {
   };
 
   render() {
+
     const { error } = this.state
-    // const { onClickCancel } = this.props
+
     return (
       <section className='AddBookmark'>
         <h2>Create a bookmark</h2>
@@ -156,4 +159,4 @@ class AddBookmark extends Component {
   }
 }
 
-export default withRouter(AddBookmark);
+export default AddBookmark
