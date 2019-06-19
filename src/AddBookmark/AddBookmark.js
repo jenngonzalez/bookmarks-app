@@ -1,16 +1,31 @@
 import React, { Component } from  'react';
-import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import BookmarksContext from '../BookmarksContext'
+// import { withRouter } from 'react-router-dom';
 import config from '../config'
 import './AddBookmark.css';
+
+
+//using context, we don't need with withRouter anymore, because the AddBookmark is passed to the component prop of Route, which gives it history as a prop
+
+//swap props.onAddBookmark for context.addBookmark
+
+//implement the cancel button directly inside this component instead of accepting an onClickCancel prop
+
 
 const Required = () => (
   <span className='AddBookmark__required'>*</span>
 )
 
 class AddBookmark extends Component {
-  static defaultProps = {
-    onAddBookmark: () => {}
-  };
+  
+  static propTypes = {
+    history: PropTypes.shape({
+      push: PropTypes.func,
+    }).isRequired,
+  }
+
+  static contextType = BookmarksContext;
 
   state = {
     error: null,
@@ -24,7 +39,7 @@ class AddBookmark extends Component {
       title: title.value,
       url: url.value,
       description: description.value,
-      rating: rating.value,
+      rating: Number(rating.value),
     }
     this.setState({ error: null })
     fetch(config.API_ENDPOINT, {
@@ -38,10 +53,7 @@ class AddBookmark extends Component {
       .then(res => {
         if (!res.ok) {
           // get the error message from the response,
-          return res.json().then(error => {
-            // then throw it
-            throw error
-          })
+          return res.json().then(error => Promise.reject(error))
         }
         return res.json()
       })
@@ -50,17 +62,24 @@ class AddBookmark extends Component {
         url.value = ''
         description.value = ''
         rating.value = ''
+        this.context.addBookmark(data)
         this.props.history.push('/')
-        this.props.onAddBookmark(data)
+
       })
       .catch(error => {
+        console.error(error)
         this.setState({ error })
       })
   }
 
+  handleClickCancel = () => {
+    this.props.history.push('/')
+  };
+
   render() {
+
     const { error } = this.state
-    const { onClickCancel } = this.props
+
     return (
       <section className='AddBookmark'>
         <h2>Create a bookmark</h2>
@@ -125,7 +144,8 @@ class AddBookmark extends Component {
             />
           </div>
           <div className='AddBookmark__buttons'>
-            <button type='button' onClick={onClickCancel}>
+            {/* <button type='button' onClick={onClickCancel}> */}
+            <button type='button' onClick={this.handleClickCancel}>
               Cancel
             </button>
             {' '}
@@ -139,4 +159,4 @@ class AddBookmark extends Component {
   }
 }
 
-export default withRouter(AddBookmark);
+export default AddBookmark
