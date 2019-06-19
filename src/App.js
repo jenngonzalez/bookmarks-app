@@ -56,7 +56,6 @@ class App extends Component {
   }
 
   render() {
-    // const { bookmarks } = this.state
     const contextValue = {
       bookmarks: this.state.bookmarks,
       addBookmark: this.addBookmark,
@@ -84,8 +83,6 @@ class App extends Component {
               // }}
               component={BookmarkList}
             />
-            <Rating />
-            {/* <BookmarkList /> */}
         </div>
        </BookmarksContext.Provider>
       </main>

@@ -1,6 +1,6 @@
 import React, { Component } from  'react';
-// import { withRouter } from 'react-router-dom';
 import BookmarksContext from '../BookmarksContext'
+import { withRouter } from 'react-router-dom';
 import config from '../config'
 import './AddBookmark.css';
 
@@ -63,7 +63,7 @@ class AddBookmark extends Component {
         rating.value = ''
         this.context.addBookmark(data)
         this.props.history.push('/')
-        // this.props.onAddBookmark(data)
+
       })
       .catch(error => {
         this.setState({ error })
@@ -156,4 +156,4 @@ class AddBookmark extends Component {
   }
 }
 
-export default AddBookmark;
+export default withRouter(AddBookmark);
