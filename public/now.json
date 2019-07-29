@@ -1,5 +1,6 @@
 {
     "version": 2,
+    "alias": "jenns-bookmark-app",
     "name": "bookmarks-app",
     "routes": [
         {
@@ -13,4 +14,3 @@
     ]
   }
 
-  
